@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<db:select doc:name="Select" doc:id="41557318-9d16-4370-8132-0a8d0cc243de" config-ref="Database_Config">
 			<db:sql ><![CDATA[select name,email,phone,gender from employee]]></db:sql>
 		</db:select>
-		<logger level="INFO" doc:name="Logger" doc:id="4a668dac-9b03-4901-a000-06dea6deb9af" message="inside db subflow!"/>
+		<logger level="INFO" doc:name="Logger" doc:id="4a668dac-9b03-4901-a000-06dea6deb9af" message="inside db subflow! git gui "/>
 		<ee:transform doc:name="Transform Message" doc:id="85a57129-ac0d-4d18-8cd2-dfb95fd73e93" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
