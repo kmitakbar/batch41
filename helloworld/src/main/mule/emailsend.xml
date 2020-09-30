@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="4d2edd78-908f-40e4-ab64-3b42988319af" >
+		<email:smtp-connection host="smtp.gmail.com" user="akbarmd.mca@gmail.com" password="Sana123$" port="587">
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<flow name="emailsendFlow" doc:id="01d0bf51-48cb-4d17-ab41-f12adefdc27d" >
+		<http:listener doc:name="Listener" doc:id="a00c945b-1206-4b68-8bde-eb260cb9b470" config-ref="HTTP_Listener_config" path="email"/>
+		<email:send doc:name="Send" doc:id="d4357021-0796-44cf-8a75-7ea1dce59440" config-ref="Email_SMTP" fromAddress="akbarmd.mca@gmail.com" subject="mule4 email">
+			<email:to-addresses >
+				<email:to-address value="mule4java@gmail.com" />
+			</email:to-addresses>
+			<email:body contentType="text/plain" encoding="UTF-8" />
+		</email:send>
+		<set-payload value="#['email send success!']" doc:name="Set Payload" doc:id="64618726-7a83-4214-aac5-04aed1029f69" />
+	</flow>
+</mule>

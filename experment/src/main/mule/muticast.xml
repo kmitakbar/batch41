@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:aggregators="http://www.mulesoft.org/schema/mule/aggregators" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/aggregators http://www.mulesoft.org/schema/mule/aggregators/current/mule-aggregators.xsd">
+	<http:request-config name="api1" doc:name="HTTP Request configuration" doc:id="55aa873a-e811-4895-b869-40cc5822c492" basePath="/api1" >
+		<http:request-connection host="localhost" port="9991" />
+	</http:request-config>
+	<http:request-config name="api2" doc:name="HTTP Request configuration" doc:id="010b767e-f150-495e-bb70-07ef8df6cd52" basePath="/api2" >
+		<http:request-connection host="localhost" port="9992" />
+	</http:request-config>
+	<flow name="muticastFlow" doc:id="7a769c6c-f66e-4a3e-9c08-bedd82991d1e" >
+		<http:listener doc:name="Listener" doc:id="4c74f2b5-c082-4a7e-b9a1-33a74aa76c53" config-ref="HTTP_Listener_config" path="fetch"/>
+		<try doc:name="Try" doc:id="b129ffc5-8bbd-469a-b2a2-3381ba3dba35" >
+			<scatter-gather doc:name="Scatter-Gather" doc:id="73fddadd-ab03-40b1-8b45-9bfa8bded7ba">
+			<route>
+				<http:request method="GET" doc:name="Request" doc:id="833c6f81-e3f6-4416-81b9-5ae63ed4283f" config-ref="api1" path="/emp" />
+				<logger level="INFO" doc:name="Logger" doc:id="4aa7c90e-c41c-4540-96ba-6633a3e5faf4" message="response from api1 #[payload]" />
+				<set-variable value="#[payload]" doc:name="input1" doc:id="e71a3b49-6bf8-4006-a7d3-c0b4035dbd93" variableName="api1result" />
+			</route>
+			<route>
+				<http:request method="GET" doc:name="Request" doc:id="e0bb3779-d060-4bc8-9e3d-d03d837f5eb6" config-ref="api2" path="/data" />
+				<logger level="INFO" doc:name="Logger" doc:id="a40951b2-b10b-44d2-8e33-4806d482b154" message="response from api2 #[payload]" />
+				<set-variable value="#[payload]" doc:name="input2" doc:id="ccfde820-ffc3-457a-9773-b23eef367782" variableName="api2result" />
+			</route>
+		</scatter-gather>
+			<aggregators:group-based-aggregator doc:name="Group based aggregator" doc:id="250e448f-e5b6-49c3-92c0-21dcae465cd7" name="finalresponse"
+			groupId="#[correlationId]" groupSize="1">
+				<aggregators:incremental-aggregation >
+					<logger level="INFO" doc:name="Logger" doc:id="91d25b9e-b19a-4071-b646-c9c3e9c22317" message="inside incr aggr #[payload]"/>
+				</aggregators:incremental-aggregation>
+				<aggregators:aggregation-complete >
+					<logger level="INFO" doc:name="Logger" doc:id="592441f8-d20c-4984-87f7-405832cb15ef" message="after aggr complete #[payload]"/>
+				</aggregators:aggregation-complete>
+			</aggregators:group-based-aggregator>
+			<ee:transform doc:name="Transform Message" doc:id="10ae11cd-33e2-4728-9dfb-7c1e67fd235a" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8f4c15da-02ad-4221-b524-1aceba2e3b82" >
+					<logger level="INFO" doc:name="Logger" doc:id="ac19eda7-1b9b-48c6-a329-7b9a8ece24a9" message="on error continue"/>
+					<set-payload value="#[output application/json
+---
+{
+}]" doc:name="Set Payload" doc:id="7a238c12-6a8a-4314-9b16-cfcd5b2e3afa" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>
+</mule>

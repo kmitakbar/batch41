@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="asyncflowFlow" doc:id="9b6fd2eb-9f35-4fc3-a0d3-96ec71e25dca" >
+		<async doc:name="Async" doc:id="8e5c7068-b80b-4b79-9295-4b404ed683b6" >
+			<db:select doc:name="Select" doc:id="05fb67c6-d31e-4b38-830e-3e96fd83b5bd" config-ref="Database_Config">
+				<db:sql ><![CDATA[select name,email,phone,gender from employee1]]></db:sql>
+			</db:select>
+			<logger level="INFO" doc:name="Logger" doc:id="07fe3971-11b6-45a1-bcf7-9669e0f0664d" />
+			<ee:transform doc:name="Transform Message" doc:id="5ebdfa8c-e147-44ea-a4a0-4bc70c72ab3a" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</async>
+	</flow>
+</mule>

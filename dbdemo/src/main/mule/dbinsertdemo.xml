@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="dbinsertdemoFlow" doc:id="ca15c042-c485-4a60-a065-c9cde99662aa" >
+		<http:listener doc:name="Listener" doc:id="6e75be92-6741-4165-a3cb-9238223145d6" config-ref="HTTP_Listener_config" allowedMethods="POST" path="save"/>
+		<logger level="INFO" doc:name="Logger" doc:id="4f177e2f-bc65-46a8-a766-27cd4b03e90a" message="received data #[payload] .........#[payload.name]"/>
+		<db:insert doc:name="Insert" doc:id="4c47d57b-7589-47de-a67e-1c09839bdd67" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into employee(name,phone,email,gender) values 
+(:name,:phone,:email,:gender)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"name":payload.name,
+	"email":payload.email,
+	"phone":payload.phone,
+	"gender":payload.gender
+}]]]></db:input-parameters>
+		</db:insert>
+		<set-payload value="#['Record inserted successfully!']" doc:name="Set Payload" doc:id="7d13b40a-eee5-4d46-be2d-7bd9ab7ba350" />
+	</flow>
+</mule>

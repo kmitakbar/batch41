@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="resxml" format="xml">
+      <types:example format="xml" element="res" location="examples/xmlres.xml"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#d6974a9a-ac2f-4d88-b6e9-07b8f8eaba3d"/>
+</types:mule>

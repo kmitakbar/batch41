@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="a3e6bd81-c4f0-4e93-b8af-503c3f90a6e1" >
+		<file:connection workingDir="C:\Users\LENOVO\Desktop\attach" />
+	</file:config>
+	<flow name="attachmentdemoFlow" doc:id="62e74609-bb45-4680-ab01-9d3523fb230c" >
+		<file:listener doc:id="71cf0777-aa23-430a-875a-1b6bf1427f6b" config-ref="File_Config" recursive="false" autoDelete="true">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</file:listener>
+		<email:send doc:name="Send" doc:id="fedeef75-6ed3-4cda-b899-d62a427cc5cb" config-ref="Email_SMTP" fromAddress="akbarmd.mca@gmail.com" subject="attachment">
+			<email:to-addresses >
+				<email:to-address value="mule4java@gmail.com" />
+			</email:to-addresses>
+			<email:attachments ><![CDATA[#[{
+	"demo.txt":payload
+}]]]></email:attachments>
+		</email:send>
+		<logger level="INFO" doc:name="Logger" doc:id="5e00fcf7-b376-4bac-9f80-63234620d58c" message="mail sent with attachment success!"/>
+	</flow>
+</mule>

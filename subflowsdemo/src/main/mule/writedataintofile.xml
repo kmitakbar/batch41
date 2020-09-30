@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="7c685e15-c6c6-46c0-9395-1ddebc2be8f3" >
+		<file:connection workingDir="C:\Users\LENOVO\Desktop\dmi" />
+	</file:config>
+	<flow name="writedataintofileFlow" doc:id="1aa254a2-8484-4b90-a8a6-24aef81cad5c" >
+		<http:listener doc:name="Listener" doc:id="b565906e-d049-44cd-ab74-feffcf1b344e" config-ref="HTTP_Listener_config" path="flow2"/>
+		<flow-ref doc:name="Flow Reference" doc:id="b3643ab8-e250-4cb5-ad72-5f1c084e6b4f" name="dataread_subflowSub_Flow"/>
+		<file:write doc:id="c8f9d3f0-f409-4035-b150-438a6edf7e86" config-ref="File_Config" path="test.json"/>
+		<set-payload value="#['data copied into a file success!']" doc:name="Set Payload" doc:id="6d946f1c-770d-4899-9bfe-6ca5ca6e7bcd" />
+	</flow>
+</mule>

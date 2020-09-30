@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="23823d83-0f8d-4771-b1d2-e66dc65fc68a" basePath="mule4" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="bd534dbd-0d8f-4d7c-ac90-8504cad4df24" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="mule" />
+	</db:config>
+	<flow name="expermentFlow" doc:id="abbbc398-43d7-4507-8ec5-f1648f707a82" >
+		<http:listener doc:name="Listener" doc:id="fac55426-bdb5-49ed-bb7e-d718cd842a89" config-ref="HTTP_Listener_config" path="exp"/>
+		<try doc:name="Try" doc:id="079dc0f3-5ca5-4607-9ec5-9cb7b841c9bf" >
+			<db:select doc:name="Select" doc:id="6006e09d-e9d1-48f7-a679-55308fb5cc07" config-ref="Database_Config">
+				<db:sql ><![CDATA[select * from demo]]></db:sql>
+			</db:select>
+			<ee:transform doc:name="Transform Message" doc:id="53b57ad1-054f-40b5-8299-1262bc6e368e" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload default []]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="089f6b63-794f-41bb-b898-cb4e0f3ccc31" type="DB:BAD_SQL_SYNTAX">
+					<logger level="INFO" doc:name="Logger" doc:id="509db872-2837-4a3b-a823-4811396d59ea" message="on error continue"/>
+				</on-error-continue>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2409c686-51f5-4049-b474-d1cc35eb6388" type="DB:CONNECTIVITY">
+					<logger level="INFO" doc:name="Logger" doc:id="2a9e3064-e201-4c69-9080-8701d0666a1b" message="on error propogate"/>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="1fb51b15-516d-4dcf-b14d-414ace3c7253" message="final response #[payload]"/>
+	</flow>
+</mule>

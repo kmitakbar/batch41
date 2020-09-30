@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd">
+	<file:config name="ftpin" doc:name="File Config" doc:id="93f986e9-877a-47c6-ab87-be011aad404e" >
+		<file:connection workingDir="E:\ftp-inbox" />
+	</file:config>
+	<ftp:config name="dlp_ftp_server" doc:name="FTP Config" doc:id="7426de5c-d6da-4036-8a62-6f0ead90c956" >
+		<ftp:connection host="ftp.dlptest.com" username="dlpuser@dlptest.com" password="eUj8GeW55SvYaswqUyDSm5v6N" />
+	</ftp:config>
+	<flow name="ftpdemoFlow" doc:id="c99dcc57-87e3-4b1b-a633-4f64ee6f8097" >
+		<file:listener doc:name="On New or Updated File" doc:id="154305c8-bf6d-4e22-99ab-ce4a6f57eefa" config-ref="ftpin" recursive="false" autoDelete="true">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</file:listener>
+		<choice doc:name="Choice" doc:id="ad5db5db-7554-4647-b965-6f834cb82389" >
+			<when expression="#[endsWith(attributes.fileName,'.txt')]">
+				<ftp:write doc:id="bd67394e-cad0-4b0d-916d-b42d249f8082" config-ref="dlp_ftp_server" path="#[attributes.fileName]" />
+			</when>
+			<when expression="#[endsWith(attributes.fileName,'.pdf')]">
+				<file:write doc:name="Write" doc:id="0135e258-5a8a-4055-a7b6-dff5f676d136" config-ref="outbox" path="#[attributes.fileName]"/>
+			</when>
+		</choice>
+	</flow>
+</mule>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="httpgetuserdataFlow" doc:id="396f477d-4b8e-47fe-9f0e-13b672da943a" >
+		<http:listener doc:name="Listener" doc:id="f0d54096-54b7-412b-87f2-7242ce2cab1a" config-ref="HTTP_Listener_config" path="user" allowedMethods="GET"/>
+		<logger level="INFO" doc:name="Logger" doc:id="8f8e962f-3a5e-4c8f-90c8-6ca3f8860f48" message="#[payload]"/>
+		<set-variable value="#[attributes.queryParams]" doc:name="queryparams" doc:id="39f7a544-6916-4c89-8092-ff117be2f279" variableName="inputdata"/>
+		<set-payload value="#['Hello' ++ vars.inputdata.name default &quot;None&quot;]" doc:name="finaloutput" doc:id="abd9891c-5402-42d1-b128-355d9b860923" />
+		<logger level="INFO" doc:name="Logger" doc:id="e2036be5-1ac8-45ae-a644-31b3a696b67d" message="before rturning fle output #[message]"/>
+	</flow>
+</mule>

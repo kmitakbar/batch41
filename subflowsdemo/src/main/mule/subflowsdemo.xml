@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="0bdabecb-8dd4-43b8-b06c-cfed4676164c" basePath="sfdemo" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="a746c7ad-a2e3-45e3-968d-eac365263bd3" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="batch41" />
+	</db:config>
+	<flow name="subflowsdemoFlow" doc:id="9e69daf5-f3f5-4f17-846c-fa8e3022a6e9" >
+		<http:listener doc:name="Listener" doc:id="5869c3dd-b547-4539-b24e-5586cff86ace" config-ref="HTTP_Listener_config" path="flow1"/>
+		<flow-ref doc:name="Flow Reference" doc:id="a16d98a3-48ea-4c47-a54c-0f9844764103" name="asyncflowFlow"/>
+	</flow>
+</mule>
