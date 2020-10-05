@@ -17,6 +17,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:listener doc:name="Listener" doc:id="b42d099f-53c8-41ee-b0d5-7731d0dd0bc2" config-ref="HTTP_Listener_config" path="add" allowedMethods="GET"/>
 		<set-variable value='#[attributes.queryParams.num1 default "0"]' doc:name="number1" doc:id="abcd08e9-086c-49ac-a1d9-c688ae3d06d7" variableName="num1"/>
 		<set-variable value='#[attributes.queryParams.num2 default "0"]' doc:name="number2" doc:id="2e8f884d-27eb-4c19-936d-b56d125fceea" variableName="num2"/>
+		<logger level="INFO" doc:name="Logger" doc:id="371b1bcf-fd60-4dc4-9642-e812a2742781" message="logger added!"/>
 		<ee:transform doc:name="Transform Message" doc:id="04b16f6d-438c-4e17-a64b-9277b825c091" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
