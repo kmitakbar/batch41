@@ -5,20 +5,17 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a00c2a5f-9c82-484e-8c08-d06cd2f326f1" basePath="profiles" >
-		<http:listener-connection host="0.0.0.0" port="${portnumber}" />
-	</http:listener-config>
-	<configuration-properties doc:name="Configuration properties" doc:id="80068656-32d0-4db2-9ce0-a2416728b21a" file="${environment}/myapplication.properties" />
-	<flow name="profilesdemoFlow" doc:id="1900c06b-5b97-4cc7-af1d-6619891e27d2" >
-		<http:listener doc:name="Listener" doc:id="f88c33fc-7716-4240-a10c-61336f05fcd3" config-ref="HTTP_Listener_config" path="get"/>
-		<ee:transform doc:name="Transform Message" doc:id="13d95d2b-01ea-4fe9-b36e-48ec8c338b8c" >
+	<flow name="calljavafromdwFlow" doc:id="1240a732-afa2-43af-9bfd-f84776a316b7" >
+		<http:listener doc:name="Listener" doc:id="10cea9db-e632-43f2-bb48-f9d6c501d815" config-ref="HTTP_Listener_config" path="dw"/>
+		<ee:transform doc:name="Transform Message" doc:id="16e92a32-2e57-4927-8824-912ed8f3df39" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
+import java!helloworld::Person
 output application/json
 ---
 {
-	"msg":Mule::p('message'),
-	"number":uuid()
+	"msg":Person::test(),
+	"msg1": Person::new('test':String).test1()
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>

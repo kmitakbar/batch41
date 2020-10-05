@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9c5b4b3c-4b9b-4e9e-9d3e-8bc52fd11ce8" basePath="cloud" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="cloudapp-helloFlow" doc:id="2968cacf-983e-47a1-bb02-a47eb29159f4" >
+		<http:listener doc:name="Listener" doc:id="42151a3a-3c36-454b-b365-0eb9613cd286" config-ref="HTTP_Listener_config" path="hello"/>
+		<set-payload value='#[{
+"message":"app deployed in cloud!"
+}]' doc:name="Set Payload" doc:id="92fce563-575a-4118-a7ad-35d65e1f32f3" />
+	</flow>
+</mule>

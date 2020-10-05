@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<flow name="non-staticFlow" doc:id="cee3ae9f-bfdb-4359-8473-c04ac0e3c261" >
+		<http:listener doc:name="Listener" doc:id="9f229552-1306-421b-a187-36bc2bf3369b" config-ref="HTTP_Listener_config" path="non"/>
+		<java:new doc:name="New" doc:id="e45c8a03-21e1-4a86-b6f6-29753e746e6a" class="helloworld.Person" constructor="Person()" target="p"/>
+		<java:invoke doc:name="Invoke" doc:id="4e336496-676d-43c3-ac3a-6d338910e285" instance="#[vars.p]" class="helloworld.Person" method="test1()"/>
+	</flow>
+</mule>

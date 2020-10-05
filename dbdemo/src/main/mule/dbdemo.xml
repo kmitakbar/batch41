@@ -15,7 +15,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="dbdemoFlow" doc:id="7a63a315-9681-447a-ae46-4314a09863d8" >
 		<http:listener doc:name="Listener" doc:id="ee141890-97d4-437b-895f-b05cecf4727c" config-ref="HTTP_Listener_config" path="allemployees"/>
 		<db:select doc:id="4e971ccb-e018-43bd-bce3-e527990b12f4" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from employee where email=:email and gender=:gender]]></db:sql>
+			<db:sql ><![CDATA[select * from employee]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
 	email:attributes.queryParams.email,
 	gender:attributes.queryParams.gen

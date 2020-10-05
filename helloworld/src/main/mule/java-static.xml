@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<flow name="java-staticFlow" doc:id="258f1468-1f07-4863-af43-2c0620f30866" >
+		<http:listener doc:name="Listener" doc:id="2fa593f9-647f-4a0a-933d-9927eb130a9c" config-ref="HTTP_Listener_config" path="static"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="8532bb17-c968-416a-bb3f-88b5789a886d" class="helloworld.Person" method="test()"/>
+	</flow>
+	
+</mule>
