@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<flow name="non-static-javaFlow" doc:id="693ae0f8-e3cc-414f-a2b6-db9093113f69" >
+		<http:listener doc:name="Listener" doc:id="4d88e504-0ca8-4bcb-a194-cd2ad025f078" config-ref="HTTP_Listener_config" path="nonstatic"/>
+		<java:new doc:name="New" doc:id="9815693a-8d60-43b6-9b7e-c27e03f23348" class="mule2java.Test" constructor="Test()" target="demo"/>
+		<java:invoke doc:name="Invoke" doc:id="7abf88cf-4dc8-47fe-9c3b-c08fe5ec6c59" instance="#[vars.demo]" class="mule2java.Test" method="geData()"/>
+	</flow>
+</mule>

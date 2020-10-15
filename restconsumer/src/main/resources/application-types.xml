@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="java_op" format="json">
+      <types:shape format="weave" example="examples/java_person_output.json"><![CDATA[%dw 2.0
+
+type java_op = Array<{|  personId: Number {"typeId": "int"},   name: String,   email: String,   age: Number {"typeId": "int"},   gender: String|}> {"example": "[{\\\"personId\\\":1,\\\"name\\\":\\\"gghjgj\\\",\\\"email\\\":\\\"dfsfsfdf@gmail.com\\\",\\\"age\\\":32,\\\"gender\\\":\\\"male\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="mule_op" format="json">
+      <types:shape format="weave" example="examples/mule_person_output.json"><![CDATA[%dw 2.0
+
+type mule_op = Array<{|  person_name: String,   email: String|}> {"example": "[{\\\"person_name\\\":\\\"test\\\",\\\"email\\\":\\\"test@gmail.com\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#7d308b84-2b23-4d07-979e-8091703a6450">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="java_op"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="mule_op"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

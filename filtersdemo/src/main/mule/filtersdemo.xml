@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c1d29e10-9e4e-4c6a-9f29-821013382ef1" basePath="valid" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="filtersdemoFlow" doc:id="95867b91-7b94-4b20-8015-e05e4e54f859" >
+		<http:listener doc:name="Listener" doc:id="a1d8b349-a6be-425b-ae8b-ddfd6ebfe558" config-ref="HTTP_Listener_config" path="data" allowedMethods="POST"/>
+		<validation:is-number doc:id="42368061-3fc4-434d-a5ee-057577f64c50" value="#[payload.age]" minValue="1" maxValue="100" numberType="INTEGER" message="invalid age"/>
+		<validation:is-email doc:name="Is email" doc:id="e298f390-0c8a-43eb-88e1-8370a01c80d1" email="#[payload.email]" message="invalid email"/>
+		<idempotent-message-validator doc:name="Idempotent Message Validator" doc:id="7a44f1e7-baa8-4491-8c08-d418f405f0b0" idExpression="#[payload.email]"/>
+		<set-payload value="#['valid data']" doc:name="Set Payload" doc:id="21a1d713-cb9b-4961-b276-a3d3483fe8ae" />
+	</flow>
+</mule>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="e55e3069-6370-4470-96fd-463a666036ac" >
+		<file:connection workingDir="K:\Users\LENOVO\Desktop\downloads1" />
+	</file:config>
+	<flow name="globalexecFlow" doc:id="495d7bf7-a35c-4a1a-a017-1fd9d3d9f25d" >
+		<http:listener doc:name="Listener" doc:id="e1c0bec5-004e-44f6-b541-43aab531d42e" config-ref="HTTP_Listener_config" path="exec">
+			<http:error-response reasonPhrase="#[payload.mesage]">
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<db:select doc:name="Select" doc:id="bbfe1b2f-301b-426b-94fa-eb3f377d1c8f" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from employee1]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="73121213-b67f-45d6-b183-24f69773f218" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:id="ff9bb272-9111-4ba9-bc75-2badf7349395" config-ref="File_Config" path="demo.json"/>
+		<error-handler ref="globalexecError_Handler" />
+	</flow>
+	<error-handler name="globalexecError_Handler" doc:id="b5b7b89a-4dff-402b-9f89-965b429e654a" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e607abbb-4832-4b04-b747-e176c2deb48c" type="ANY" when="#[error.errorType.namespace=='DB']">
+			<logger level="INFO" doc:name="Logger" doc:id="04166c7a-420e-4be3-82ca-0900a6d54211" message="inside error handler!"/>
+			<ee:transform doc:name="Transform Message" doc:id="2ca72fb9-8d70-463e-bbd0-52aa4c08f24c" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"error":error.description,
+	"mesage":error.errorType.namespace
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<set-payload value="#[payload]" doc:name="Set Payload" doc:id="9b6b7906-43d0-40f6-99cf-45fe9c6bf69a" />
+			<logger level="INFO" doc:name="Logger" doc:id="cb4bfd82-87e4-4cfb-b185-c59935d3174e" message="after transform ::::#[payload]"/>
+		</on-error-propagate>
+	</error-handler>
+</mule>

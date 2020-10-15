@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c9d44476-d284-4972-a84b-6acec632de58" basePath="db" >
 		<http:listener-connection host="0.0.0.0" port="8081" />
 	</http:listener-config>
@@ -13,12 +14,13 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="batch41" />
 	</db:config>
 	<flow name="dbdemoFlow" doc:id="7a63a315-9681-447a-ae46-4314a09863d8" >
-		<http:listener doc:name="Listener" doc:id="ee141890-97d4-437b-895f-b05cecf4727c" config-ref="HTTP_Listener_config" path="allemployees"/>
+		<http:listener doc:name="Listener" doc:id="ee141890-97d4-437b-895f-b05cecf4727c" config-ref="HTTP_Listener_config" path="allemployees">
+			<http:response reasonPhrase="selected data" />
+		</http:listener>
 		<db:select doc:id="4e971ccb-e018-43bd-bce3-e527990b12f4" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from employee]]></db:sql>
+			<db:sql ><![CDATA[select * from employee where name=:name]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
-	email:attributes.queryParams.email,
-	gender:attributes.queryParams.gen
+	name:attributes.queryParams.name
 	
 }]]]></db:input-parameters>
 		</db:select>

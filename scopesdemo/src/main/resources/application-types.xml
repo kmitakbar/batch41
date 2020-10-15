@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="person-test-data" format="csv">
+      <types:shape format="weave" example="examples/test-person.csv"><![CDATA[%dw 2.0
+
+type person_test_data = Array<{|  name: String,   email: String,   gender: String,   phonenumber: String|}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0",
+"separator": ","}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+        <types:property name="separator" value=","/>
+      </types:properties>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#acec8531-0d79-4ee8-872d-6eb063a7ff0e">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="person-test-data"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

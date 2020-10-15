@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.example.org/employee"
+	xmlns:tns="http://www.example.org/employee"
+	elementFormDefault="qualified">
+	<element name="employee">
+	<complexType>
+	<sequence>
+	<element name="empId" type="int"/>
+	<element name="empname" type="string" maxOccurs="1" nillable="false"/>
+	<element name="dept" type="string" maxOccurs="1" nillable="false"/>
+	<element name="salary" type="float" maxOccurs="1" nillable="false"/>
+	</sequence>
+	</complexType>
+	</element>
+</schema>

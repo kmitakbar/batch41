@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd">
+	<xml-module:config name="XML_Config" doc:name="XML Config" doc:id="81e21d33-d7ad-4763-9eea-41dcacb8c890" />
+	<flow name="xmlvalidFlow" doc:id="837593c2-c9ef-4ae3-956a-269c7b89b778" >
+		<http:listener doc:name="Listener" doc:id="75271867-b195-4c3c-80af-9e22fa880e7c" config-ref="HTTP_Listener_config" path="xml" allowedMethods="POST"/>
+		<xml-module:validate-schema doc:id="ab8ecf5d-f05b-471c-b0df-0935ce442222" schemas="person.xsd" config-ref="XML_Config"/>
+		<set-payload value="#['valid xml data']" doc:name="Set Payload" doc:id="72462396-fb2b-4d66-947c-1fb4a8114cb6" />
+	</flow>
+</mule>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3683712a-b0e9-4464-b48b-1f0cb427597a" basePath="/person" >
+		<http:request-connection host="localhost" port="9996" />
+	</http:request-config>
+	<flow name="personapiFlow" doc:id="26ab9528-0761-4f20-8d01-7caee15aaa63" >
+		<http:listener doc:name="Listener" doc:id="cfc04bc4-8786-469b-8512-ed8c04e268f5" config-ref="HTTP_Listener_config" path="persons"/>
+		<http:request method="GET" doc:name="Request" doc:id="a8ec39ec-8832-462e-bafc-afb4578f02cd" config-ref="HTTP_Request_configuration" path="/all"/>
+		<ee:transform doc:name="Transform Message" doc:id="7d308b84-2b23-4d07-979e-8091703a6450" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var dept=['DEV','QA','ADMIN']
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	person_name: payload01.name,
+	email: payload01.email,
+	age:payload01.age,
+	dept:if((payload01.age)>18) (dept[1]) else (dept[2]),
+	age_group:if((payload01.age)>18) ('major') else ('minor')
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

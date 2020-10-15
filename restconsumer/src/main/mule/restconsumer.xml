@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ed4b891f-ec56-4464-a5b7-4bf8d1d7ffa0" basePath="rest" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="dummy_rest_api" doc:name="HTTP Request configuration" doc:id="59eef745-ddfe-42f8-9e58-b3f635e77724" basePath="/api/v1" >
+		<http:request-connection host="dummy.restapiexample.com" />
+	</http:request-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="6187804d-a9e0-4faa-9d57-09dad15879eb" >
+		<file:connection workingDir="C:\Users\LENOVO\Desktop\attach" />
+	</file:config>
+	<flow name="restconsumerFlow" doc:id="832f54ba-b20e-4518-b7a1-8bf9d68c30f7" >
+		<http:listener doc:name="Listener" doc:id="49f246fc-25ea-4027-8d1a-2ada6fdc60ba" config-ref="HTTP_Listener_config" path="employees" allowedMethods="GET"/>
+		<http:request method="GET" doc:name="Request" doc:id="b33f0ac2-f2b3-49b3-87c3-6414d3b2c4a1" config-ref="dummy_rest_api" path="/employees"/>
+		<ee:transform doc:name="Transform Message" doc:id="fec9eeda-da6b-4bbe-a2d6-2a1c849c692f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+//payload.data filter(item, index) -> item.employee_age>60
+groupBy(payload.data,(val,index)->val.employee_age) ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

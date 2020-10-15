@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xml-module="http://www.mulesoft.org/schema/mule/xml-module" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/xml-module http://www.mulesoft.org/schema/mule/xml-module/current/mule-xml-module.xsd">
+	<flow name="employee-xml-dataFlow" doc:id="d3401c66-0cd3-471b-b726-637469d05c27" >
+		<http:listener doc:name="Listener" doc:id="49d92c5e-530e-4d26-b0dc-3a50627196cc" config-ref="HTTP_Listener_config" path="schema"/>
+		<xml-module:validate-schema doc:id="b6de58a5-3a65-4a61-8498-753d9e42dd6c" schemas="schemas\employee.xsd"/>
+		<set-payload value="#['valid xml data received']" doc:name="Set Payload" doc:id="b93b37df-d620-4763-9275-86bd691c903c" />
+	</flow>
+</mule>
