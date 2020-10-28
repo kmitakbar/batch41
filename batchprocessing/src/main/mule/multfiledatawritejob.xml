@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<file:config name="File_Config1" doc:name="File Config" doc:id="a44c2bd0-4f9c-442a-a6fa-82551bcf1722" >
+		<file:connection workingDir="C:\Users\LENOVO\Desktop\attach1" />
+	</file:config>
+	<file:config name="File_Config2" doc:name="File Config" doc:id="0d15fe4e-609e-4f0e-a850-59fe7358bb7f" >
+		<file:connection workingDir="C:\Users\LENOVO\Desktop\downloads" />
+	</file:config>
+	<flow name="multfiledatawritejobFlow" doc:id="d7adf7a7-26d7-4884-a05b-698e2496945c" >
+		<file:listener doc:name="On New or Updated File" doc:id="33693b5c-c517-4411-a22b-5b9c1457e7f5" config-ref="File_Config1" recursive="false" autoDelete="true">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</file:listener>
+		<ee:transform doc:name="Transform Message" doc:id="a31308ed-6189-4ced-843f-cd3ae7316020" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<batch:job jobName="multfiledatawritejobBatch_Job" doc:id="31ffcde8-a634-440e-93d6-ab844d6a2a52" >
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="7514fdbc-fc2d-4a8c-ad94-f639a53625f8" >
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="5f8dc5e8-4cc6-49b9-8521-b60e02f29589" size="10">
+						<logger level="INFO" doc:name="Logger" doc:id="d211cb27-4dc2-4e45-8971-f003d1e2a189" />
+						<ee:transform doc:name="Transform Message" doc:id="508f8bb4-1b6e-4a2e-8d47-aaf9ec0e504b" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<file:write doc:name="Write" doc:id="9e8ae03f-3930-454d-a507-f4ca768303e2" config-ref="File_Config2" path='#[uuid()++".json"]' />
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="f64385be-cc23-4876-8897-cfff1bfbdd29" message="batch completed!"/>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+</mule>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="00c8a501-8a1c-4070-8fff-aec10fbb024f" basePath="vm" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="a15dd6e6-add5-4d79-8681-36a1b24c6193" >
+		<vm:queues >
+			<vm:queue queueName="q1" maxOutstandingMessages="5" queueType="PERSISTENT"/>
+		</vm:queues>
+	</vm:config>
+	<flow name="vmdemoFlow" doc:id="7505ddf7-52a3-481c-b25d-c9275c447e13" >
+		<http:listener doc:name="Listener" doc:id="e5bf3bb5-7269-4170-a7c0-6a905a945697" config-ref="HTTP_Listener_config" path="pub"/>
+		<logger level="INFO" doc:name="Logger" doc:id="538bac00-9302-427d-a7fc-8847d5766170" message="message received #[payload]"/>
+		<vm:publish doc:id="d23a101b-6abd-4b04-9cb4-33192f08387f" config-ref="VM_Config" queueName="q1"/>
+		<set-payload value="#['message published!']" doc:name="Set Payload" doc:id="9443f5a2-198e-4c6a-b516-a43f8c135c2d" />
+	</flow>
+</mule>

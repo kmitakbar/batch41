@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="sample-csv" format="csv">
+      <types:shape format="weave" example="examples/tst.csv"><![CDATA[%dw 2.0
+
+type sample_csv = Array<{|  name: String,   email: String,   gender: String,   phonenumber: String|}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0",
+"separator": ","}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+        <types:property name="separator" value=","/>
+      </types:properties>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#af6b7abe-1191-48f0-8d16-090f69b262ff">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="sample-csv"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#8be42479-ab1c-4d25-bcd4-73f0b016b929">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="sample-csv"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#a31308ed-6189-4ced-843f-cd3ae7316020">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="sample-csv"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

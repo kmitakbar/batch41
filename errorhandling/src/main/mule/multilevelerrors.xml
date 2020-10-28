@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="27b906ec-d095-47ed-a545-4c8e96534f30" >
+		<file:connection workingDir="K:\Users\LENOVO\Desktop\attach" />
+	</file:config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="253c035b-aaeb-4335-81d4-e20aa4dd58df" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="batch41" />
+	</db:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="89592252-6cb1-474a-a560-2daf9da369fb" basePath="exec" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="multilevelerrorsFlow" doc:id="3ab35d62-4e67-495e-95a7-727f1ebc0e87" >
+		<http:listener doc:name="Listener" doc:id="31889bff-6390-4089-a133-13ef6b1a86a9" config-ref="HTTP_Listener_config" path="multierror"/>
+		<try doc:name="Try" doc:id="dec204f5-6ffc-4214-9264-a5f19667f598" >
+			<db:select doc:name="Select" doc:id="923a7cb1-b14d-497a-8d3a-1a6b10a47290" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from person]]></db:sql>
+		</db:select>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="802034ae-0b78-4827-8e49-761c949caffd" type="DB:BAD_SQL_SYNTAX">
+					<set-payload value='#[output application/json ---
+[{
+	"id":100,
+	"name":"test"
+}]]' doc:name="Set Payload" doc:id="23ef2c74-fe53-4280-ab32-c6e22914d4e9"/>
+				</on-error-continue>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="21b5044b-fb9b-410b-b935-a4168220c859" type="DB:CONNECTIVITY, DB:QUERY_EXECUTION">
+					<set-payload value="#['connectvity issue!']" doc:name="Set Payload" doc:id="86148c0e-d008-468a-8891-fcd7f18b0613" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="3e1ad8f0-5033-4b6d-a4bf-a744733c42c6" message="after db execution #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="cd32a01f-7c6e-43c6-b16b-322a04f9ae68" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="bbbfcbbe-bae8-4243-b031-f1d55b5270e9" config-ref="File_Config" path="demo.json"/>
+		<set-payload value="#['data copied into a file success!']" doc:name="Set Payload" doc:id="d34c9533-ea28-4a18-9298-0005a3598f78" />
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="df188bbf-6f4a-4703-9ae0-edd84d91b78a" type="FILE:ACCESS_DENIED, FILE:CONNECTIVITY, FILE:FILE_ALREADY_EXISTS">
+				<set-payload value="#['setting the dault payload in file error!']" doc:name="Set Payload" doc:id="7fde80c8-1283-4ca4-b661-eaafedc6e243" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

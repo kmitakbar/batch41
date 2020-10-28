@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b5c854ea-1270-4180-9099-6b6b1dcc4fbf" basePath="jms" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="jmsproducerFlow" doc:id="31ec65d5-ab46-4105-b8a3-d6ac89ca5f0b" >
+		<http:listener doc:name="Listener" doc:id="3a4d89b5-8bd8-4ff6-8d0a-d6d05eb3092b" config-ref="HTTP_Listener_config" path="producer"/>
+		<jms:publish doc:id="40b37a4d-fa35-4e5e-b7d7-d4b5f22afc18" />
+	</flow>
+</mule>

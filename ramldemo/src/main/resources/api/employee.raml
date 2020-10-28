@@ -1,0 +1,36 @@
+#%RAML 1.0
+title: Employee API to manipulate employee records
+baseUri: http://localhost:9090/api/v1/employee
+/allemployees:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              [{
+                "id":100,
+                "name":"akbar",
+                "gender":"male",
+                "email":"test@gmail.com"
+              }]
+/save:
+  post:
+    body:
+      application/json:
+        example:
+          {
+            "name":"akbar",
+            "gender":"male",
+            "email":"test@gmail.com"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "name":"akbar",
+                "gender":"male",
+                "email":"test@gmail.com"
+              }

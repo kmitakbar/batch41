@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7fc9d533-4ba7-483d-a106-e5046447bd11" basePath="policy" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<api-gateway:autodiscovery apiId="16421700" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="6e8c1fe2-9a24-4a74-a1be-60955768067d" flowRef="policydemoFlow" />
+	<flow name="policydemoFlow" doc:id="e17e8ba7-eae8-42bc-a14c-81331778b806" >
+		<http:listener doc:name="Listener" doc:id="e7687a5c-391d-429b-95b7-b14d3f05079d" config-ref="HTTP_Listener_config" path="app1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="aa53170b-1e38-463a-9142-8f355bf76d54" message="#[attributes.remoteAddress]"/>
+		<set-payload value="#['applying policies!']" doc:name="Set Payload" doc:id="17ebfe68-b47c-4b98-b62e-a6e78787617c" />
+	</flow>
+</mule>

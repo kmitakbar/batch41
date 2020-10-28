@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d2dfb5a3-7b48-4fdf-900c-3ebbf43a9e6e" basePath="trn" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="cba114b9-2c7e-4fa1-b3b2-9b40f663c143" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="batch41" />
+	</db:config>
+	<flow name="transactiondemoFlow" doc:id="a029caa6-00d0-47c8-90d6-95d5582e80b2" >
+		<http:listener doc:name="Listener" doc:id="2c5b4826-bf44-4a12-b9e3-223934df1721" config-ref="HTTP_Listener_config" path="create" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="de4708fc-9739-4989-a450-2ec3730c47b4" message="initial payload #[payload]"/>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="239c49a1-0102-45b0-ad47-8e2322e020a4" variableName="empdata"/>
+		<try doc:name="Try" doc:id="c5867d2d-e6e9-43c9-8cc5-de1bb44644ff" transactionalAction="ALWAYS_BEGIN">
+			<db:insert doc:id="9272c5ea-e86a-4b25-8084-7ee12f525107" config-ref="Database_Config" doc:name="Employee_Insert" transactionalAction="ALWAYS_JOIN">
+			<db:sql><![CDATA[insert into employee(name,email,gender,phone)values(:name,:email,:gender,:phone)]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	name:vars.empdata.name,
+	email:vars.empdata.email,
+	gender:vars.empdata.gender,
+	phone:vars.empdata.phone
+}]]]></db:input-parameters>
+		</db:insert>
+			<ee:transform doc:name="Transform Message" doc:id="a4230400-fbd9-4938-a8d6-ab6306a9136c">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			<logger level="INFO" doc:name="Logger" doc:id="aaf3ffed-a9b1-4ef2-a6e1-924741c82d16" message="after employee creation #[payload]" />
+			<db:insert doc:name="Address_Insert" doc:id="f01f2f41-15f5-4688-9fd8-a951cac2e468" config-ref="Database_Config" transactionalAction="ALWAYS_JOIN">
+			<db:sql><![CDATA[insert into address(email,street,city,zipcode)values(:email,:street,:city,:zipcode)]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	email:vars.empdata.email,
+	street:vars.empdata.street,
+	city:vars.empdata.city,
+	zipcode:vars.empdata.zipcode
+}]]]></db:input-parameters>
+		</db:insert>
+		</try>
+	</flow>
+</mule>

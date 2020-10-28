@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<flow name="childapp1Flow" doc:id="0e6a2786-c7d3-44b0-8c33-2285dfb63394" >
 		<http:listener doc:name="Listener" doc:id="943d8c47-af3a-44a9-b25b-f4e99b01b1a3" config-ref="HTTP_Listener_config" path="fetch"/>
 		<db:select doc:name="Select" doc:id="39ae2c4f-b45c-408c-9ec8-ba32edde4f1f" config-ref="Database_Config">
-			<db:sql ><![CDATA[select * from employee ]]></db:sql>
+			<db:sql><![CDATA[select * from employee ]]></db:sql>
 		</db:select>
 		<ee:transform doc:name="Transform Message" doc:id="e31a075e-d2f0-41ca-97e2-4adfd080b586" >
 			<ee:message >

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="aba288b8-c82c-419b-af11-7c46a7ad3644" >
+		<vm:queues />
+	</vm:config>
+	<flow name="vmconsumerFlow" doc:id="ded1021a-ac40-439c-9f12-1f4509b5793d" >
+		<http:listener doc:name="Listener" doc:id="2c94d881-607d-4df8-909b-9bd454ad0ca1" config-ref="HTTP_Listener_config" path="vmc"/>
+		<vm:consume queueName="q1" doc:id="6781b834-d5af-416f-937e-ee1ee900bc2c" config-ref="VM_Config"/>
+	</flow>
+</mule>

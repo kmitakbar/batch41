@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:s3="http://www.mulesoft.org/schema/mule/s3" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="cd2e4b0c-5676-40b6-9a3d-209969243f69" >
+		<file:connection workingDir="C:\Users\LENOVO\Desktop\attach" />
+	</file:config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="02b130be-6d80-4104-a894-ef07bf25dba8" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="batch41" />
+	</db:config>
+	<flow name="batchprocessingFlow" doc:id="9bcbb0b0-8c28-40db-a6fe-270e5213681f" >
+		<file:listener doc:id="546aa2e5-7ae3-438a-8bf5-ea8d2ef97735" config-ref="File_Config" recursive="false" autoDelete="true">
+			<scheduling-strategy >
+				<fixed-frequency />
+			</scheduling-strategy>
+		</file:listener>
+		<ee:transform doc:name="Transform Message" doc:id="af6b7abe-1191-48f0-8d16-090f69b262ff" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<batch:job jobName="batchprocessingBatch_Job" doc:id="07fe3074-edc0-43ce-959a-7722311563e0" maxFailedRecords="10">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="fe17ff06-6352-4528-b463-c26bfbff8bc7" >
+					<logger level="INFO" doc:name="Logger" doc:id="e04fdf9d-8f57-421d-8088-cb9cb314e16c" message="inside batch process phase #[payload]"/>
+					<db:insert doc:id="b98f6f60-6445-4109-b0d8-aa1fb11a0308" config-ref="Database_Config">
+						<db:sql ><![CDATA[insert into person(name,phone,mail,gender)values(:name,:phone,:email,:gender)]]></db:sql>
+						<db:input-parameters ><![CDATA[#[{
+	"name":payload.name,
+	"phone":payload.phonenumber,
+	"email":payload.email,
+	"gender":payload.gender
+}]]]></db:input-parameters>
+					</db:insert>
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Logger" doc:id="29d60ad8-11f8-40ec-8edf-42680d969975" message="after batch job completion"/>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+</mule>

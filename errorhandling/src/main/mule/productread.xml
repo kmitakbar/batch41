@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="productreadFlow" doc:id="e31ca11a-ca84-4efa-8f5c-1c8edbebcc91" >
+		<http:listener doc:name="Listener" doc:id="e960d5f2-3d56-4d96-a825-e505babebbdc" config-ref="HTTP_Listener_config" path="product"/>
+		<db:select doc:name="Select" doc:id="8d0d19c3-c16f-4637-a1cc-2d9fd11d1108" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from product]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="c3c0e313-2ae7-4767-b10c-8fd68f7504e2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<try doc:name="Try" doc:id="5a94cb04-d771-4a55-8fa5-164a36fe08ee" >
+			<file:write doc:name="Write" doc:id="c0a28c22-ebcd-44e8-bee9-02a0e0a75f41" />
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="78c49fdd-3513-4bcd-994e-3122b34af6d2" />
+			</error-handler>
+		</try>
+		<error-handler ref="global_exceptions" >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a14e516e-422b-4cb3-b607-ab1688bc27e6" />
+		</error-handler>
+	</flow>
+</mule>
