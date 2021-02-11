@@ -14,6 +14,6 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	<flow name="helloworldFlow" doc:id="7d5f882a-f863-4501-bdad-3aa5bf0ec345" >
 		<http:listener doc:id="0a609c67-663c-4f70-9ffc-052f159eb0a4" doc:name="helloworld" config-ref="HTTP_Listener_config" path="hello"/>
 		<logger level="INFO" doc:name="Logger" doc:id="a18668ec-ebb2-4af3-b568-da250d4ecb28" message="#[message]"/>
-		<set-payload value="#['Hello Mule!']" doc:name="Set Payload" doc:id="b0bb29a1-5a49-414c-9548-9cf7812b5d86" />
+		<set-payload value="#['Hello Mule Akbar  modified!']" doc:name="Set Payload" doc:id="b0bb29a1-5a49-414c-9548-9cf7812b5d86" />
 	</flow>
 </mule>
